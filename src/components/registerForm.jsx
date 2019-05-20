@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
+import * as userService from "../services/userService";
 
 class RegisterForm extends Form {
   state = { data: { username: "", password: "", name: "" }, errors: {} };
@@ -19,8 +20,19 @@ class RegisterForm extends Form {
       .label("Name")
   };
 
-  doSubmit = () => {
+  doSubmit = async () => {
     //call server
+    try {
+      await userService.register(this.state.data);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        console.log("Register Form Catch block exception ", ex.response);
+        const errors = { ...this.state.errors };
+        errors.username = ex.response.data;
+        this.setState({ errors });
+      }
+    }
+    console.log(" Register Form doSubmit ", this.state.data);
     console.log("Submitted Register");
   };
   render() {
