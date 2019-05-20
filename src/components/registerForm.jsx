@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
 import * as userService from "../services/userService";
+import auth from "../services/authService";
 
 class RegisterForm extends Form {
   state = { data: { username: "", password: "", name: "" }, errors: {} };
@@ -23,7 +24,11 @@ class RegisterForm extends Form {
   doSubmit = async () => {
     //call server
     try {
-      await userService.register(this.state.data);
+      const response = await userService.register(this.state.data);
+      console.log("Register Form ", response);
+      auth.getCurrentUser(response.headers["x-auth-token"]);
+      // this.props.history.push("/");
+      window.location = "/";
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         console.log("Register Form Catch block exception ", ex.response);
