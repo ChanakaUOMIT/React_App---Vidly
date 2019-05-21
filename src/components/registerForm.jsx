@@ -26,7 +26,8 @@ class RegisterForm extends Form {
     try {
       const response = await userService.register(this.state.data);
       console.log("Register Form ", response);
-      auth.getCurrentUser(response.headers["x-auth-token"]);
+      // auth.getCurrentUser(response.headers["x-auth-token"]);
+      auth.loginWithJwt(response.headers["x-auth-token"]);
       // this.props.history.push("/");
       window.location = "/";
     } catch (ex) {
